@@ -11,10 +11,19 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { JwtModule } from '@nestjs/jwt';
 import { secret } from './utils/constants';
 import { join } from 'path/posix';
+import { diskStorage } from 'multer';
+import { MulterModule } from '@nestjs/platform-express';
+import { v4 as uuidv4 } from 'uuid';
+import { FileUploadService } from './file-upload/file-upload.service';
+
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
     MongooseModule.forRoot('mongodb://127.0.0.1:27017/nestjs-practice'),
+    ConfigModule.forRoot({
+      envFilePath: 'config.development.env',
+    }),
     UserModule,
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     JwtModule.register({
@@ -24,9 +33,19 @@ import { join } from 'path/posix';
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),
     }),
+    // Local file saver
+    // MulterModule.register({
+    //   storage: diskStorage({
+    //     destination: './public',
+    //     filename: (req, file, cb) => {
+    //       const ext = file.mimetype.split('/')[1];
+    //       cb(null, `${uuidv4()}-${Date.now()}.${ext}`);
+    //     },
+    //   })
+    // }),
   ],
   controllers: [AppController, UserController],
-  providers: [AppService, UserService],
+  providers: [AppService, UserService, FileUploadService],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {

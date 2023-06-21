@@ -1,7 +1,8 @@
-export interface User{
+export interface UserModel{
     mobile:string;
     countryCode:string;
-    name:string;
+    firstName:string;
+    lastName:string;
     email:string;
     password:string;
     createdAt:Date;

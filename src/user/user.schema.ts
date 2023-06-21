@@ -1,18 +1,27 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 export type UserDocument = User & Document;
+import { UserModel } from './user.interface';
 @Schema()
-export class User {
+export class User implements UserModel {
   @Prop()
-  fullname: string;
+  mobile: string;
+  @Prop()
+  countryCode: string;
   @Prop({ lowercase: true })
+  firstName: string;
+  @Prop({ lowercase: true })
+  lastName: string;
+  @Prop({ lowercase: true, unique: true, required: true })
   email: string;
   @Prop()
   password: string;
-  @Prop({ default: Date.now() })
-  createdDate: Date;
-  @Prop({ default: false })
+  @Prop()
+  createdAt: Date;
+  @Prop()
+  updatedAt: Date;
+  @Prop()
   isDeleted: boolean;
-  @Prop({ default: null })
-  deletedDate: Date;
+  @Prop()
+  deletedAt: Date;
 }
 export const UserSchema = SchemaFactory.createForClass(User);
